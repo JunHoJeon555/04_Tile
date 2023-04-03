@@ -7,7 +7,7 @@ using UnityEditor;
 
 // RoadTile용 인스펙터 변경해주는 클래스
 [CustomEditor(typeof(RoadTile))]
-+public class RoadTileEditor : Editor
+public class RoadTileEditor : Editor
 {
     RoadTile roadTile;
 
