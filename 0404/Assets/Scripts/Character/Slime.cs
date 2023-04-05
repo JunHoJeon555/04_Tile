@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class Slime : PoolObject
 {
+    SpriteRenderer spriteRenderer;
+
     Material material;
 
+    public float phaseDuration = 0.5f;
 
     private void Awake()
     {
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        GetComponent<Renderer>().material;
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        material = GetComponent<Renderer>().material;
     }
 }

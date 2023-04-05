@@ -42,9 +42,9 @@ Material:
     - _DessolveScale: 40
     - _DissolveFade: 1
     - _Fade: 0.521
-    - _OutlineThickness: 0
+    - _OutlineThickness: 0.00529
     - _PhaseSplit: 0
-    - _PhaseThickness: 0.01
+    - _PhaseThickness: 0.1033
     - _Scale: 40
     - _Split: 1
     - _Thickness: 0.1268
@@ -52,5 +52,5 @@ Material:
     - _Color: {r: 8, g: 0, b: 8, a: 0}
     - _DessolveColor: {r: 0.8396226, g: 0.5643074, b: 0.130696, a: 0}
     - _OutlineColor: {r: 0.16797815, g: 0.9752065, b: 1.1245204, a: 0}
-    - _PhaseColor: {r: 1, g: 0, b: 0.91280556, a: 0}
+    - _PhaseColor: {r: 3.9999995, g: 1.4107512, b: 0, a: 0}
   m_BuildTextureStacks: []

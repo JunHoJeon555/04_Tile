@@ -14,17 +14,18 @@ public class Test_Factory : Test_Base
     protected override void Test1(InputAction.CallbackContext _)
     {
         Slime slime = Factory.Inst.GetSlime(transform);
-        slime.Add(slime);
-        Vetor3 pos = new(Random.Range(-maxX, maxX), Random.Range(-maxY, maxY));
+        slimes.Add(slime);
+        Vector3 pos = new(Random.Range(-maxX, maxX), Random.Range(-maxY, maxY));
+        slime.transform.position= pos;
     }
 
 
     protected override void Test2(InputAction.CallbackContext _)
     {
-        while(slime.Count > 0)
+        while(slimes.Count > 0)
         {
             Slime slime = slimes[0];
-            slime.RemoveAt(0);
+            slimes.RemoveAt(0);
             slime.gameObject.SetActive(false);
 
         }

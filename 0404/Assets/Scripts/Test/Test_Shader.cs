@@ -17,8 +17,7 @@ public class Test_Shader : Test_Base
 
     //float num1 = 0f;
     //float num2 = 0f;
-    float num3 = 0f;
-    
+
     public float speed = 0.5f;
     float acc = 0f;
 
@@ -30,6 +29,12 @@ public class Test_Shader : Test_Base
         {
             materials[i] = spritRenderers[i].material;
         }
+    
+    }
+
+    private void Start()
+    {
+        materials[5].SetFloat("_DissolveFade", 0);
     }
 
     protected override void Test1(InputAction.CallbackContext _)
@@ -48,10 +53,9 @@ public class Test_Shader : Test_Base
         //phase와 dissolve가 계속 
 
         acc += Time.deltaTime;
-        num3 = (Mathf.Cos(acc * speed) + 3f) * 0.5f;
-
-
-
+        float num3 = (Mathf.Cos(acc));
+        
+        float num4 = (Mathf.Sin(acc));
         //num1 += Time.deltaTime;
         //num2 = Mathf.Sin(num1) * 1f;
 
@@ -61,7 +65,8 @@ public class Test_Shader : Test_Base
         materials[4].SetFloat("_Fade", num3);
 
 
-        materials[5].SetFloat("_DissolveFade", num3);
+        materials[5].SetFloat("_DissolveFade", num4);
+
         materials[5].SetFloat("_PhaseSplit", num3);
 
         //materials[1].SetFloat("_Split", num2);
