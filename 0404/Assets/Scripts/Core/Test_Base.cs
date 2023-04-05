@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 public class Test_Base : MonoBehaviour
 {
-    PlayerInputActions inputActions;
+    protected PlayerInputActions inputActions;
 
     protected virtual void Awake()
     {
