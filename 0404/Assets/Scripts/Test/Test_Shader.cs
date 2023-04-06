@@ -42,9 +42,11 @@ public class Test_Shader : Test_Base
         materials[0].SetFloat("_Thickness", 0.0f);
     }
 
-    protected override void Test2(InputAction.CallbackContext _)
+   
+
+    protected override void Test3(InputAction.CallbackContext _)
     {
-        materials[0].SetFloat("_Thickness", 0.005f);
+        
     }
 
     private void Update()

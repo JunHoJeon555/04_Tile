@@ -42,7 +42,7 @@ Material:
     - _DessolveScale: 40
     - _DissolveFade: 1
     - _Fade: 0.521
-    - _OutlineThickness: 0.00529
+    - _OutlineThickness: 0
     - _PhaseSplit: 0
     - _PhaseThickness: 0.1033
     - _Scale: 40

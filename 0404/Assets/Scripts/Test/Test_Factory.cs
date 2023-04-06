@@ -9,6 +9,8 @@ public class Test_Factory : Test_Base
     public float maxX;
     public float maxY;
 
+    bool showOutline = false;
+
     List<Slime> slimes = new List<Slime>();
 
     protected override void Test1(InputAction.CallbackContext _)
@@ -27,7 +29,17 @@ public class Test_Factory : Test_Base
             Slime slime = slimes[0];
             slimes.RemoveAt(0);
             slime.gameObject.SetActive(false);
+            slime.OnAttacked();
 
+        }
+    }
+
+    protected override void Test3(InputAction.CallbackContext _)
+    {
+        showOutline = !showOutline;
+        foreach (Slime slime in slimes)
+        {
+            slime.ShowOutline(showOutline);
         }
     }
 }
