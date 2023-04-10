@@ -6,20 +6,13 @@ public class Test_Astar : Test_Base
 {
     private void Start()
     {
-
-
         GridMap map = new GridMap(4, 3);
 
-         Node node = map.GetNode(1, 0);
-
+        Node node = map.GetNode(1, 0);
         node.gridType = Node.GridType.Wall;
-        node = map.GetNode(1, 1);
-        node.gridType = Node.GridType.Wall;
-        node = map.GetNode(1, 2);
+        node = map.GetNode(2, 2);
         node.gridType = Node.GridType.Wall;
 
-
-        //int i = 0;
         List<Vector2Int> path = AStar.PathFind(map, new(0, 0), new(3, 2));
 
         string pathStr = "Path : ";

@@ -5,18 +5,38 @@ using UnityEngine;
 
 public class Slime : PoolObject
 {
-    SpriteRenderer spriteRenderer;
+    // 이동 관련 변수들 ----------------------------------------------------------------------------
+    public float moveSpeed = 2.0f;
+
+    GridMap map;
+
+    List<Vector2Int> path;
+
+    PathLine pathLine;
+    public PathLine PathLine => pathLine;
+
+    Vector2Int Position => map.WorldToGrid(transform.position);
+
+    // 셰이더용 변수들 -----------------------------------------------------------------------------
+    /// <summary>
+    /// 페이즈 전체 진행 시간
+    /// </summary>
+    public float phaseDuration = 0.5f;
 
     /// <summary>
-    /// 이 게임 오브젝트의 머티리얼
-    /// </summary
-    Material mainMaterial;
+    /// 디졸브 전체 진행 시간
+    /// </summary>
+    public float dissolveDuration = 1.0f;
+
+    /// <summary>
+    /// 외각선 두께용 상수
+    /// </summary>
+    const float Outline_Thickness = 0.005f;
 
     /// <summary>
     /// 페이즈가 끝날 때 실행되는 델리게이트
     /// </summary>
     Action onPhaseEnd;
-
 
     /// <summary>
     /// 디졸브가 끝날 때 실행되는 델리게이트(기본적으로 Die 함수 연결되어있음)
@@ -24,22 +44,17 @@ public class Slime : PoolObject
     Action onDissolveEnd;
 
     /// <summary>
-    /// 페이즈 전체 시간
+    /// 이 게임 오브젝트의 머티리얼
     /// </summary>
-    public float phaseDuration = 0.5f;
+    Material mainMaterial;
 
-    /// <summary>
-    /// 디졸브 전체 진행 시간
-    /// </summary>
-    public float dissolveDuration = 1f;
-
-    /// <summary>
-    /// 외각선 두께용 상수
-    /// </summary>
-    const float Outline_Thickness = 0.005f;
+    // 컴포넌트들
+    SpriteRenderer spriteRenderer;
 
     private void Awake()
     {
+        pathLine = GetComponentInChildren<PathLine>();
+
         spriteRenderer = GetComponent<SpriteRenderer>();
         mainMaterial = spriteRenderer.material;
 
@@ -50,6 +65,11 @@ public class Slime : PoolObject
     {
         ResetShaderProperties();            // 스폰 될 때 셰이더 프로퍼티 초기화
         StartCoroutine(StartPhase());       // 페이즈 시작
+    }
+
+    private void Update()
+    {
+        MoveUpdate();
     }
 
     /// <summary>
@@ -144,6 +164,37 @@ public class Slime : PoolObject
         gameObject.SetActive(false);
     }
 
+
+    public void Initialize(GridMap gridMap, Vector3 pos)
+    {
+        map = gridMap;
+        transform.position = map.GridToWorld(map.WorldToGrid(pos));
+    }
+
+    public void SetDestination(Vector2Int goal)
+    {
+        path = AStar.PathFind(map, Position, goal);
+        pathLine.DrawPath(map, path);
+    }
+
+    private void MoveUpdate()
+    {
+        if (path != null && path.Count > 0)
+        {
+            Vector2Int destGrid = path[0];
+
+            Vector3 dest = map.GridToWorld(destGrid);
+            Vector3 dir = dest - transform.position;
+
+            if (dir.sqrMagnitude < 0.001f)
+            {
+                transform.position = dest;
+                path.RemoveAt(0);
+            }
+            else
+            {
+                transform.Translate(Time.deltaTime * moveSpeed * dir.normalized);
+            }
+        }
+    }
 }
-
-
