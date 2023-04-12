@@ -50,6 +50,7 @@ public class Test_NavMesh : Test_Base
             //agent.avoidancePriority   //회피우선 순위
             //agent.remainingDistance   //남아있는 이동거리
             //agent.stoppingDistance;   //도착한 것으로 인정하는 거리
+            
             //agent.pathPending;        //에이전트가 경로를 계산 중이라 정지상태일 때 true.
             //agent.autoRepath;         //경로가 사용하지 못하게 되면 자동으로 경로 재계산
 

@@ -60,16 +60,18 @@ public class GridMap
         //test[2,1]
         nodes = new Node[height * width];
 
+        movablePositions = new Vector2Int[height * width];
         for (int y = 0; y < height; y++)
         {
             for (int x = 0; x < width; x++)
             {
                 int index = GridToIndex(x, y);
                 nodes[index] = new Node(x, y);
+
+                movablePositions[index] = new Vector2Int(x, y);
             }
         }
 
-        movablePositions = new Vector2Int[height * width];
     }
 
     /// <summary>
@@ -289,15 +291,31 @@ public class GridMap
         return IsMonster(gridPos.x, gridPos.y);
     }
 
+    public bool IsSpawnable(int x, int y)
+    {
+        Node node = GetNode(x, y);
+        return node != null && (node.gridType == Node.GridType.Plain);
+    }
+
+
+    public bool IsSpawnable(Vector2Int gridPos)
+    {
+        return IsSpawnable(gridPos.x, gridPos.y);
+    }
+
     /// <summary>
     /// 랜덤으로 이동 가능한 지역 뽑기
     /// </summary>
-    /// <returns></returns>
+    /// <returns>이동 가능한 위치 중 하나(랜덤)</returns>
     public Vector2Int GetRandomMovablePosition()
     {
         //movablePositions;
-        return Vector2Int.zero;
-    }
+        int index = Random.Range(0, movablePositions.Length);
+        return movablePositions[index];
 
+
+
+    }
     // 슬라임 이동이 완료되면 자동으로 랜덤한 위치로 다시 동 시작하게 만들기
+
 }
