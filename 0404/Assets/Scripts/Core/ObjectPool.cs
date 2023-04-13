@@ -36,7 +36,7 @@ public class ObjectPool<T> : MonoBehaviour where T : PoolObject
     /// <summary>
     /// 처음 만들어졌을 때 한번 실행될 코드(초기화 코드)
     /// </summary>
-    public void Initialize()
+    public virtual void Initialize()
     {
         if (pool == null)
         {
@@ -76,11 +76,31 @@ public class ObjectPool<T> : MonoBehaviour where T : PoolObject
             // 델리게이트가 실행되면 readyQueue.Enqueue(comp) 실행
             comp.onDisable += () => readyQueue.Enqueue(comp);
 
+            //각 T타입 별로 필요한 추가작업 정리
+            OnGenerateObject(comp, i);
+
             newArray[i] = comp;                 // 풀 배열에 넣고
             obj.SetActive(false);               // 비활성화해서 안보이게 만들기고 레디큐에도 추가하기
         }
     }
+    /// <summary>
+    /// 각 T 타입 별로 필요한 추가 작업 처리하는 함수
+    /// </summary>
+    /// <param name="comp">T타입의 컴포넌트</param>
+    /// <param name="index">풀에서의 인덱스</param>
+    protected virtual void OnGenerateObject(T comp, int index)
+    {
 
+    }
+
+
+
+
+    /// <summary>
+    /// 레디큐에서 오브젝트 하나 리턴하는 함수. 없으면 풀을 확장 시킨 후 하나 리턴.
+    /// </summary>
+    /// <param name="spawnTransform">위치,회전,스케일을 설정하기 위한 트랜스폼</param>
+    /// <returns>레디큐에서 꺼내진 오브젝트 하나</returns>
     public T GetObject(Transform spawnTransform = null)
     {
         if (readyQueue.Count > 0)  // 큐에 오브젝트가 있는지 확인

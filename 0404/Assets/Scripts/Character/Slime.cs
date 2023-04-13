@@ -38,6 +38,16 @@ public class Slime : PoolObject
     List<Vector2Int> path;
 
     /// <summary>
+    /// 다른 슬라임에 의해 경로가 막혔을 때 기다린 시간
+    /// </summary>
+    float pathWaitTime = 0f;
+
+    /// <summary>
+    /// 경로가 막혔을 때 최대로 기다리는 시간
+    /// </summary>
+    const float MaxPathWaitTime = 1f;
+
+    /// <summary>
     /// 슬라임이 이동할 경로를 그리는 클래스
     /// </summary>
     PathLine pathLine;
@@ -46,6 +56,29 @@ public class Slime : PoolObject
     /// 경로 그리는 클레
     /// </summary>
     public PathLine PathLine => pathLine;
+
+    /// <summary>
+    /// 이 슬라임이 현재 위치하고 있는 노드
+    /// </summary>
+    Node current;
+    Node Current
+    {
+        get => current;
+        set
+        {
+            if(current != value)
+            {
+                if(current != null)
+                {
+                    current.gridType = Node.GridType.Plain; //이전 노드를 Plain으로 되돌리기
+                }
+                current = value;
+                current.gridType = Node.GridType.Monster;   //새 currnet를 Monster로 설정
+
+                spriteRenderer.sortingOrder = -current.y;   //겹쳤을 때 아랫쪽 슬라임이 위에 그려져지도록 설정
+            }
+        }
+    }
 
     // 셰이더용 변수들 -----------------------------------------------------------------------------
     /// <summary>
@@ -93,6 +126,8 @@ public class Slime : PoolObject
         onPhaseEnd += () =>
         {
             isActivate = true;  //페이즈가 끝나면 isActivate를 활성화
+            PathLine.gameObject.SetActive(true);
+        
         };
         onDissolveEnd += Die;   // 디졸브가 끝나면 죽게 만들기
 
@@ -222,6 +257,10 @@ public class Slime : PoolObject
     /// </summary>
     void Die()
     {
+        path.Clear();
+        PathLine.ClearPath();
+
+
         onDie?.Invoke();
         onDie = null;
         gameObject.SetActive(false);
@@ -236,6 +275,8 @@ public class Slime : PoolObject
     {
         map = gridMap;  //맵 저장
         transform.position = map.GridToWorld(map.WorldToGrid(pos)); //시작 위치에 배치
+        Current = map.GetNode(pos);
+    
     }
 
     /// <summary>
@@ -245,39 +286,57 @@ public class Slime : PoolObject
     public void SetDestination(Vector2Int goal)
     {
         path = AStar.PathFind(map, Position, goal); //길찾기해서 경로 저장하기
-        pathLine.DrawPath(map, path);               //경로 따라서 그리기
+        PathLine.DrawPath(map, path);               //경로 따라서 그리기
+        
+    
     }
 
     /// <summary>
     /// Update에서 실행되는 함수. 이동처리.
     /// </summary>
     private void MoveUpdate()
-    {if(isActivate) 
+    {if (isActivate)
         {
-        if (path != null && path.Count > 0) //path가 있고 path의 갯수가 보다 크다
-        {
-            Vector2Int destGrid = path[0];  //path의 [0]번째를 중간 목적지로 설정 
-
-            Vector3 dest = map.GridToWorld(destGrid);   //중간 목적지의 월드 좌표 계산
-            Vector3 dir = dest - transform.position;    //방향 결정
-
-            if (dir.sqrMagnitude < 0.001f)              //남은 거리 확인
+            //path가 있고 path의 갯수가 0보다 크고, 대기시간이 최대 대기 시간보다 작을 때
+            if (path != null && path.Count > 0 && pathWaitTime < MaxPathWaitTime) 
             {
-                //거의 도착한 상태
-                transform.position = dest;              // 중간 도착지점으로 위치 옮기기
-                path.RemoveAt(0);                       // path의 0번째 제거
+                Vector2Int destGrid = path[0];  //path의 [0]번째를 중간 목적지로 설정
+
+                //destGrid에 몬스터가 없거나, destGrid가 current가 일 때(내 위치)만 이동가능
+                if (!map.IsMonster(destGrid) || map.GetNode(destGrid) == Current)
+                {
+                    Vector3 dest = map.GridToWorld(destGrid);   //중간 목적지의 월드 좌표 계산
+                    Vector3 dir = dest - transform.position;    //방향 결정
+
+                    if (dir.sqrMagnitude < 0.001f)              //남은 거리 확인
+                    {
+                        //거의 도착한 상태
+                        transform.position = dest;              // 중간 도착지점으로 위치 옮기기
+                        path.RemoveAt(0);                       // path의 0번째 제거
+                    }
+                    else
+                    {
+                        // 아직 거리가 남아있는 상태
+                        transform.Translate(Time.deltaTime * moveSpeed * dir.normalized);   // 중간 지점까지 계속 이동
+                        Current = map.GetNode(transform.position);  //현재 노드 변경 시도
+                    }
+
+                    // 조금이라도 움직이면 대기시간 초기화
+                    pathWaitTime = 0f;
+                }
+                else
+                {   
+                    //기다리는시간 누적 시키기
+                    pathWaitTime += Time.deltaTime;
+                }
+
             }
             else
             {
-                // 아직 거리가 남아있는 상태
-                transform.Translate(Time.deltaTime * moveSpeed * dir.normalized);   // 중간 지점까지 계속 이동
+                //path 따라서 도착
+                pathWaitTime = 0f;          //기다린 시간 초기화
+                OnGoalArrive?.Invoke();     //도착했다고 알림
             }
-        }
-        else
-        {
-            //path 따라서 도착
-            OnGoalArrive?.Invoke();
-        }
         }
     
     }

@@ -72,4 +72,17 @@ public class SpawnerManager : MonoBehaviour
     {
         slime.Initialize(gridMap, pos);
     }
+
+
+
+    /// <summary>
+    /// 스크린좌표에 있는 노드를 리턴하는 함수
+    /// </summary>
+    /// <param name="screenPos">마우스의 스크린 좌표</param>
+    /// <returns>해당 위치에 있는 노드</returns>
+    public Node GetNode(Vector2 screenPos)
+    {
+        Camera.main.ScreenToWorldPoint(screenPos);
+        return gridMap.GetNode(screenPos);
+    }
 }
