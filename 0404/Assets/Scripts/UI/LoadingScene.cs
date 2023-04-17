@@ -31,7 +31,7 @@ public class LoadingScene : MonoBehaviour
     
     
     /// <summary>
-    /// 로딩바의 value가 목표로 하는 값 
+    /// 로딩바의 value가 목표로 하는 값 (0.0 ~)
     /// </summary>
     float loadRatio = 0f;
 
@@ -74,65 +74,78 @@ public class LoadingScene : MonoBehaviour
         slider = FindObjectOfType<Slider>();
         loadingText = FindObjectOfType<TextMeshProUGUI>();
 
-        loadingTextCoroutine = LodingTextProgress();
-        StartCoroutine(LoadScene());
-        StartCoroutine(loadingTextCoroutine);
+        loadingTextCoroutine = LodingTextProgress();    //코루틴 정지 시키기 위해 저장해 놓기
+        StartCoroutine(LoadScene());                    //글자 변경 코루틴 시작
+        StartCoroutine(loadingTextCoroutine);           //로딩바 움직이는 코루틴 시작
     }
 
     private void Update()
     {
-        if(slider.value < loadRatio)
+        if(slider.value < loadRatio)            //sloder.value를 loadRatio까지 무조건 증가시키기
         {
-            slider.value += (Time.deltaTime * loadingBarSpeed);
-        }
-        else
-        {
-            slider.value = loadRatio;
+            slider.value += (Time.deltaTime * loadingBarSpeed);     //넘쳐도 slider.value의 최대값은 1이다.
         }
     }
 
     private void press(InputAction.CallbackContext context)
     {
-        
+        if(loadingComplete)
+        {
+            async.allowSceneActivation = true; //씬 활성화 시킬 수 있게 만들기
+        }
+
     }
 
 
+    /// <summary>
+    /// 비동기로 씬을 로딩하는 코루틴
+    /// </summary>
+    /// <returns></returns>
     IEnumerator LoadScene()
     {
-        slider.value = 0f;
-        loadRatio = 0f;
-        async = SceneManager.LoadSceneAsync(nextSceneName);
-        async.allowSceneActivation= false;
+        slider.value = 0f;      //slider 초기화
+        loadRatio = 0f;         //목표값도 초기화
+        async = SceneManager.LoadSceneAsync(nextSceneName);     //비동기 씬 로딩시작
+        async.allowSceneActivation= false;                      //자동으로 씬 활서화 금지
 
-        while (loadRatio < 1f)
+        while (loadRatio < 1f)      //loadRation가 1 이사이 될까지 반복
         {
-            loadRatio =async.progress +0.1f;
-            yield return null;  
+            loadRatio =async.progress +0.1f;    //씬이 로딩 완료되었을 때 loadTatio는 1이된다
+            yield return null;                  //다음 프레임까지 대기
         }
+
+        //slider.value가 loadRatio로 올라갈때까지 대기
         yield return new WaitForSeconds((loadRatio-slider.value)/loadingBarSpeed);
 
-        StopCoroutine(loadingTextCoroutine);
-        loadingComplete= true;
-        loadingText.text = "Loading\n Complete.";
+        StopCoroutine(loadingTextCoroutine);        //글자 변경하는 코루틴 정지시키기
+        loadingComplete= true;                      //로딩 완료로 표시해서 입력받을 수 있게 하기
+        loadingText.text = "Loading\n Complete.";   //글자 최종변경
     }
 
+    /// <summary>
+    /// Loading 글자 ㅜ디에 점을 찍기위한 코루틴
+    /// </summary>
+    /// <returns></returns>
     IEnumerator LodingTextProgress()
     {
 
-        while (loadRatio < 1f)
-        {
-            loadRatio = async.progress + 0.1f;
+        float waitTime = 0.2f;  //글자가 변견되는 간격
+        WaitForSeconds wait = new WaitForSeconds(waitTime); //한번만 new를 하기 위해 미리 만들기
 
-            loadingText.text = "Loading" + ".";
-            yield return new WaitForSeconds(0.3f);
-            loadingText.text = "Loading" + ". .";
-            yield return new WaitForSeconds(0.3f);
-            loadingText.text = "Loading" + ". . .";
-            yield return null;
+        // 문자열 결합이 비효율 적이라 미리 만들어 놓기
+        string[] texts = { "Loadin", "Loading .", "Loading . .", "Loading . . .", "Loading . . . .", "Loading . . . . ." };
+        int index = 0;      //texts 중에 몇 번째 글자를 출력할지 결정할 인덱스
+
+
+        //complete되서 끝나기 전까지는 무한으로 돌리기
+        while (true)
+        {
+            loadingText.text = texts[index];
+            index++;
+            index %= texts.Length;
+
+            yield return wait;
         }
-        
-        
-        yield return null;
 
 
     }
