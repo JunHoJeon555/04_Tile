@@ -74,15 +74,19 @@ public class ObjectPool<T> : MonoBehaviour where T : PoolObject
 
             // 리턴타입이 void이고 파라메터가 없는 람다함수를 onDisable에 등록
             // 델리게이트가 실행되면 readyQueue.Enqueue(comp) 실행
-            comp.onDisable += () => readyQueue.Enqueue(comp);
+            comp.onDisable += () =>
+            {
+                readyQueue.Enqueue(comp);
+            };
 
-            //각 T타입 별로 필요한 추가작업 정리
+            // 각 T 타입 별로 필요한 추가 작업 처리
             OnGenerateObject(comp, i);
 
             newArray[i] = comp;                 // 풀 배열에 넣고
             obj.SetActive(false);               // 비활성화해서 안보이게 만들기고 레디큐에도 추가하기
         }
     }
+
     /// <summary>
     /// 각 T 타입 별로 필요한 추가 작업 처리하는 함수
     /// </summary>
@@ -90,11 +94,7 @@ public class ObjectPool<T> : MonoBehaviour where T : PoolObject
     /// <param name="index">풀에서의 인덱스</param>
     protected virtual void OnGenerateObject(T comp, int index)
     {
-
     }
-
-
-
 
     /// <summary>
     /// 레디큐에서 오브젝트 하나 리턴하는 함수. 없으면 풀을 확장 시킨 후 하나 리턴.
@@ -117,8 +117,8 @@ public class ObjectPool<T> : MonoBehaviour where T : PoolObject
         }
         else
         {
-            ExpandPool();           // 큐에 오브젝트가 없으면 풀을 두배로 늘린다.
-            return GetObject();     // 새롭게 하나 요청
+            ExpandPool();                       // 큐에 오브젝트가 없으면 풀을 두배로 늘린다.
+            return GetObject(spawnTransform);   // 새롭게 하나 요청
         }
     }
 

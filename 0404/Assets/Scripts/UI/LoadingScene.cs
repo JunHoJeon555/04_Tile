@@ -106,11 +106,16 @@ public class LoadingScene : MonoBehaviour
         slider.value = 0f;      //slider 초기화
         loadRatio = 0f;         //목표값도 초기화
         async = SceneManager.LoadSceneAsync(nextSceneName);     //비동기 씬 로딩시작
-        async.allowSceneActivation= false;                      //자동으로 씬 활서화 금지
+        async.allowSceneActivation = false;                      //자동으로 씬 활서화 금지
 
+        //Color start = Color.black;
+        //Color end = Color.white;
+        //Image image = slider.transform.GetChild.(1).GetCild (0).GetComponent<Imager>();
+        
         while (loadRatio < 1f)      //loadRation가 1 이사이 될까지 반복
         {
             loadRatio =async.progress +0.1f;    //씬이 로딩 완료되었을 때 loadTatio는 1이된다
+            //Image.color = Color.Lerp(Start,ebd)
             yield return null;                  //다음 프레임까지 대기
         }
 
@@ -119,7 +124,7 @@ public class LoadingScene : MonoBehaviour
 
         StopCoroutine(loadingTextCoroutine);        //글자 변경하는 코루틴 정지시키기
         loadingComplete= true;                      //로딩 완료로 표시해서 입력받을 수 있게 하기
-        loadingText.text = "Loading\n Complete.";   //글자 최종변경
+        loadingText.text = "Loading\n Complete.";   
     }
 
     /// <summary>
