@@ -41,8 +41,6 @@ public class MapManager : MonoBehaviour
     /// </summary>
     string[] sceneNames;
 
-    Transfo rm player;
-
     /// <summary>
     /// 씬의 로딩 상태를 나타낼 Enum
     /// </summary>
@@ -246,14 +244,6 @@ public class MapManager : MonoBehaviour
                 unloadWorkComplete.Add(index);                      // 로딩 해제 완료 목록에 추가
             };
         }
-    }
-
-
-    void WorldTOGrid()
-    {
-        
-
-
     }
 
     // 테스트용 함수 -------------------------------------------------------------------------------
