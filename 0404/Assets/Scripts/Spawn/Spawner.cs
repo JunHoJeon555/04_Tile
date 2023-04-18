@@ -38,6 +38,9 @@ public class Spawner : MonoBehaviour
     /// </summary>
     List<Node> spawnAreaList;
 
+    /// <summary>
+    /// 스포너 매니저
+    /// </summary>
     SpawnerManager manager;
 
     private void Start()
@@ -84,10 +87,12 @@ public class Spawner : MonoBehaviour
         if (GetSpawnPosition(out Vector3 spawnPos))
         {
             Slime slime = Factory.Inst.GetSlime();
-            count++;
-            slime.onDie += () =>
+            count++;                    //스포너에서 생성된 갯수 증가
+            slime.onDie += () =>        //슬라임 죽을 때
             {
-                count--;
+                count--;                //스포너에서 생성된 갯수 감소
+                manager.Player.AddLifeTime(slime.lifeTimeBonus);
+                manager.Player.AddKillCount();
             };
             slime.transform.SetParent(transform);
             manager.SlimeInitialize(slime, spawnPos);

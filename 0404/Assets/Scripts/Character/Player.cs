@@ -1,13 +1,74 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
+    //수명 관련---------------------------------------------------------------------------------------------------------------------------
 
+    /// <summary>
+    /// 플레이어의 최대 수명
+    /// </summary>
+    public float maxLifeTime = 10.0f;
+
+    /// <summary>
+    /// 플레이어의 현재 수명
+    /// </summary>
+    float lifeTime;
+    
+    /// <summary>
+    /// 수명확인 및 설정용 프로퍼티
+    /// </summary>
+    public float LifeTime
+    {
+        get => lifeTime;
+        set
+        {
+            lifeTime = value;
+            if(lifeTime < 0.0f && !isDead)
+            {
+                Die();      //살아있는데 수명이 0이하면 사망
+                
+            }
+            else
+            {
+                lifeTime = Mathf.Clamp(value, 0.0f, maxLifeTime); //최소0, 최대 maxLifeTime로 클램프
+            }
+            onLifeTimeChange?.Invoke(lifeTime/maxLifeTime);
+        }
+    }
+
+    /// <summary>
+    /// 플레이어 수명이 변경될 때 실행 될 델리게이트, (파라메터 : 비율)
+    /// </summary>
+    public Action<float> onLifeTimeChange;
+
+    public Action<int> onKill;
+
+
+    /// <summary>
+    /// 전체 플레이 시간
+    /// </summary>
+    float totalPlayTime;
+
+    /// <summary>
+    /// 잡은 슬라임 수 
+    /// </summary>
+    int killCount = 0;
+
+    /// <summary>
+    /// 플레이어의 생존 여부
+    /// </summary>
+    bool isDead = false;
+
+    /// <summary>
+    /// 플레이어가 죽었을 때 실행될 델리게이트. 전체 플레이 시간과 킬 카운트넘겨줌
+    /// </summary>
+    public Action<float, int> onDie;
 
     //이동 관련---------------------------------------------
     /// <summary>
@@ -27,6 +88,28 @@ public class Player : MonoBehaviour
     Vector2 oldInputDir;
     bool isMove = false;
 
+    /// <summary>
+    /// 플레이어가 현재 위치하고 있는 맵의 그리드 좌표
+    /// </summary>
+    Vector2Int currentMap;
+
+    Vector2Int CurrentMap
+    {
+        get => currentMap;
+        set
+        {
+            if (value != currentMap)            //맵을 이동했을 때만
+            {
+                currentMap = value;             //변경하고
+                onMapMoved?.Invoke(currentMap); //델리게이트 실행
+            }
+        }
+    }
+
+    /// <summary>
+    /// 맵이 변경되었을 때 실행될 델리게이트(파라메터 : 진입한 맵의 그리드 좌표)
+    /// </summary>
+    public Action<Vector2Int> onMapMoved;
 
     //공격관련--------------------------------
 
@@ -52,12 +135,13 @@ public class Player : MonoBehaviour
 
     //기타-------------------------
 
-
+    //컴포넌트들
     Animator anim;
     Rigidbody2D rigid;
-
+    //입력 인풋 액샨
     PlayerInputActions inputActions;
 
+    MapManager mapManager;
 
 
     private void Awake()
@@ -111,18 +195,28 @@ public class Player : MonoBehaviour
         inputActions.Player.Disable();
     }
 
+    private void Start()
+    {
+        mapManager = GameManager.Inst.MapManager;
+        LifeTime = maxLifeTime;
+    }
+
     private void Update()
     {
-        currentAttackCoolTime -= Time.deltaTime;
+        currentAttackCoolTime -= Time.deltaTime;//무조건 쿨타임 감소시키기
+        LifeTime -=Time.deltaTime;
+        totalPlayTime += Time.deltaTime;
     }
 
     private void FixedUpdate()
     {
-        transform.Translate(Time.fixedDeltaTime * speed * inputDir);
+        //transform.Translate(Time.fixedDeltaTime * speed * inputDir);
 
         rigid.MovePosition(rigid.position + Time.fixedDeltaTime * speed * inputDir);
 
+        CurrentMap = mapManager.WorldToGrid(rigid.position);
 
+        //Debug.Log(mapManager.WorldToGrid(rigid.position));
     }
 
 
@@ -246,8 +340,38 @@ public class Player : MonoBehaviour
             attackAreaCenter.rotation = Quaternion.identity;    // 중립
         }
     }
+    
+    /// <summary>
+    /// 플레이어가 죽으면 실행되는 함수
+    /// </summary>
+    void Die()
+    {
+        lifeTime = 0.0f;            //수명은 0으로
+
+        isDead= true;               //죽었다고 표시
+        onDie?.Invoke(totalPlayTime, killCount);        //죽었다고 알림
+            
+    }
 
 
+    /// <summary>
+    /// 수명 추가해주는 함수
+    /// </summary>
+    /// <param name="time">추가되는 수명</param>
+    public void AddLifeTime(float time)
+    {
+        LifeTime += time;
+    }
 
+    /// <summary>
+    /// 킬카운트 1증가 시키는 함수
+    /// </summary>
+    public void AddKillCount()
+    {
+        
+        
+        killCount++;
+        onKill?.Invoke(killCount);
+    }
 
 }

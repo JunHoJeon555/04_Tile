@@ -38,6 +38,11 @@ public class Slime : PoolObject
     /// </summary>
     public Action onDie;
 
+    /// <summary>
+    /// 슬라임이 죽었을 시 증가시킬 플레이어의 수명
+    /// </summary>
+    public float lifeTimeBonus = 2f;
+
 
     // 이동 관련 변수들 ----------------------------------------------------------------------------
 
@@ -54,7 +59,7 @@ public class Slime : PoolObject
     /// <summary>
     /// 슬라임이 이동할 경로
     /// </summary>
-    List<Vector2Int> path;
+    List<Vector2Int> path = new List<Vector2Int>();
 
     /// <summary>
     /// 다른 슬라임에 의해 경로가 막혔을 때 기다린 시간
@@ -97,6 +102,8 @@ public class Slime : PoolObject
             }
         }
     }
+
+    public bool isShowPathLine = false;
 
     /// <summary>
     /// 목적지 도착했을 때 실행되는 델리게이트
@@ -147,7 +154,7 @@ public class Slime : PoolObject
         onPhaseEnd += () =>
         {
             isActivate = true;  // 페이즈가 끝나면 isActivate를 활성화
-            PathLine.gameObject.SetActive(true);
+            PathLine.gameObject.SetActive(isShowPathLine);
         };
         onDissolveEnd += Die;   // 디졸브가 끝나면 죽게 만들기
 

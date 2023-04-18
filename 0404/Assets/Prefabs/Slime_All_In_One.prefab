@@ -264,9 +264,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b748d0c064cf87047b85fed5a605a4f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lifeTimeBonus: 2
   moveSpeed: 2
+  isShowPathLine: 0
   phaseDuration: 0.5
-  dissolveDuration: 1
+  dissolveDuration: 0.5
 --- !u!45 &4703554729198528788
 Skybox:
   m_ObjectHideFlags: 0

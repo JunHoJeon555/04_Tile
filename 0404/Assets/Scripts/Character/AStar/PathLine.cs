@@ -15,6 +15,7 @@ public class PathLine : MonoBehaviour
     private void Awake()
     {
         lineRenderer = GetComponent<LineRenderer>();
+        gameObject.SetActive(false);
     }
 
     /// <summary>

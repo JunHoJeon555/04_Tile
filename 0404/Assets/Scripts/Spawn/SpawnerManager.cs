@@ -5,6 +5,9 @@ using UnityEngine.Tilemaps;
 
 public class SpawnerManager : MonoBehaviour
 {
+    Player player;
+    public Player Player => player;
+
     GridMap gridMap;
     Tilemap background;
     Tilemap obstacle;
@@ -24,6 +27,11 @@ public class SpawnerManager : MonoBehaviour
         gridMap = new GridMap(background, obstacle);
 
         spawners = GetComponentsInChildren<Spawner>();
+    }
+
+    private void Start()
+    {
+        player = GameManager.Inst.Player;
     }
 
     /// <summary>
