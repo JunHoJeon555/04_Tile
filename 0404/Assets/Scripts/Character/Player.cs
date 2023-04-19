@@ -60,7 +60,7 @@ public class Player : MonoBehaviour
     /// <summary>
     /// 잡은 슬라임 수 
     /// </summary>
-    int killCount = 0; //killcount 처음에 0으로 설정할 때 작동하게 하려는 목적
+    int killCount =  int.MinValue; //killcount 처음에 0으로 설정할 때 작동하게 하려는 목적
 
     int KillCount
     {
@@ -214,6 +214,7 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        KillCount = 0;
         mapManager = GameManager.Inst.MapManager;
         LifeTime = maxLifeTime;
     }
@@ -366,6 +367,7 @@ public class Player : MonoBehaviour
         lifeTime = 0.0f;            //수명은 0으로
 
         isDead= true;               //죽었다고 표시
+        inputActions.Player.Disable();
         onDie?.Invoke(totalPlayTime, KillCount);        //죽었다고 알림
 
     }
@@ -377,8 +379,10 @@ public class Player : MonoBehaviour
     /// <param name="time">추가되는 수명</param>
     public void AddLifeTime(float time)
     {
-        
-        LifeTime += time;
+        if (!isDead)
+        {
+            LifeTime += time;
+        }
     }
 
     /// <summary>

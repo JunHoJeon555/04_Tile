@@ -21,6 +21,8 @@ public class KillCountText : MonoBehaviour
     {
         Player player = GameManager.Inst.Player;
         player.onKillCountChange += OnKillCountChange;
+        targetValue = 0;
+        currentValue = 0;
     }
     private void Update()
     {

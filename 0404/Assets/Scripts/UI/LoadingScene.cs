@@ -1,9 +1,7 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -87,7 +85,7 @@ public class LoadingScene : MonoBehaviour
         }
     }
 
-    private void press(InputAction.CallbackContext context)
+    private void press(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
         if(loadingComplete)
         {

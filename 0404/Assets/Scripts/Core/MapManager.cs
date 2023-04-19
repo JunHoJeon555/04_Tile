@@ -60,14 +60,14 @@ public class MapManager : MonoBehaviour
     /// <summary>
     /// 모든 씬이 언로드 되었음을 확인하기 위한 프로퍼티. 모든씬이 언로드 되었으면 true, 아니면 false
     /// </summary>
-    public bool IsUnloadAll
+     public bool IsUnloadAll
     {
         get
         {
             bool result = true;
-            foreach (var state in sceneLoadState)
+            foreach( var state in sceneLoadState )
             {
-                if (state != SceneLoadState.Unload)
+                if(state != SceneLoadState.Unload)
                 {
                     result = false; // 하나라도 언로드가 아니면 false
                     break;
@@ -76,7 +76,6 @@ public class MapManager : MonoBehaviour
             return result;
         }
     }
-
     /// <summary>
     /// 로딩을 시도할 목록
     /// </summary>
@@ -152,6 +151,16 @@ public class MapManager : MonoBehaviour
         Player player = GameManager.Inst.Player;
         if (player != null)
         {
+            player.onDie += (_, _) =>    // 플레이어가 죽으면
+            {
+                for (int y = 0; y < HeightCount; y++)
+                {
+                    for (int x = 0; x < WidthCount; x++)
+                    {
+                        RequestAsyncSceneUnload(x, y);  // 모든씬 로딩 해제
+                    }
+                }
+            };
             player.onMapMoved += (gridPos) =>
             {
                 RefreshScenes(gridPos.x, gridPos.y);  // 맵 변경될 때마다 주변 로딩 요청

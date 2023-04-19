@@ -280,7 +280,7 @@ public class Slime : PoolObject
     void Die()
     {
         onDie?.Invoke();
-        onDie = null;
+        
 
         ReturnToPool();
     }
@@ -290,8 +290,9 @@ public class Slime : PoolObject
     /// </summary>
     public void ReturnToPool()
     {
-        path.Clear();           // 경로를 다 비우기 
-        PathLine.ClearPath();   // 라인랜더러 초기화 하고 오브젝트 비활성화
+        onDie = null;                   // 델리게이트 초기화
+        path.Clear();                   // 경로를 다 비우기 
+        PathLine.ClearPath();           // 라인랜더러 초기화 하고 오브젝트 비활성화
 
         transform.SetParent(Pool);      // 부모를 풀로 되돌리기
 
