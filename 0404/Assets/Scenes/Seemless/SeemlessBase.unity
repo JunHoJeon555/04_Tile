@@ -616,6 +616,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aedc69413e9afc542823d3fd2821d74c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 1
 --- !u!114 &497286309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -677,8 +678,9 @@ GameObject:
   m_Component:
   - component: {fileID: 682274986}
   - component: {fileID: 682274985}
+  - component: {fileID: 682274987}
   m_Layer: 0
-  m_Name: Global Volume
+  m_Name: PostProcess Volume
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -716,6 +718,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &682274987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682274984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f62ef2471f77c64ca1974e7962dca2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 1
 --- !u!1001 &780325051
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1360,7 +1375,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -30}
+  m_AnchoredPosition: {x: -50, y: -50}
   m_SizeDelta: {x: 500, y: 200}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1804750766
@@ -1383,7 +1398,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Kill : 0'
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 79459efec17a4d00a321bdcc27bbc385, type: 2}
@@ -1472,7 +1487,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4018a10b15cfd247aaf4e367b4411f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  point: 0
+  speed: 10
 --- !u!1 &1883634620
 GameObject:
   m_ObjectHideFlags: 0
@@ -1621,6 +1636,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9019f9f274cefa14ebf186349047fa71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 1
 --- !u!1 &2031842515
 GameObject:
   m_ObjectHideFlags: 0

@@ -18,6 +18,7 @@ public class Test_Astar : Test_Base
         string pathStr = "Path : ";
         foreach (var pos in path)
         {
+
             pathStr += $" ({pos.x}, {pos.y}) ->";
         }
         pathStr += " 끝";

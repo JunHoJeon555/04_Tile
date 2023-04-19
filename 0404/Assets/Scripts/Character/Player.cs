@@ -19,6 +19,8 @@ public class Player : MonoBehaviour
     /// 플레이어의 현재 수명
     /// </summary>
     float lifeTime;
+
+    float targetvalue;
     
     /// <summary>
     /// 수명확인 및 설정용 프로퍼티
@@ -47,7 +49,7 @@ public class Player : MonoBehaviour
     /// </summary>
     public Action<float> onLifeTimeChange;
 
-    public Action<int> onKill;
+   
 
 
     /// <summary>
@@ -58,7 +60,22 @@ public class Player : MonoBehaviour
     /// <summary>
     /// 잡은 슬라임 수 
     /// </summary>
-    int killCount = 0;
+    int killCount = 0; //killcount 처음에 0으로 설정할 때 작동하게 하려는 목적
+
+    int KillCount
+    {
+        get => killCount;
+        set
+        {
+            if (killCount != value)
+            {
+                killCount = value;
+                onKillCountChange?.Invoke(killCount);
+            }
+        }
+    }
+    public Action<int> onKillCountChange;
+
 
     /// <summary>
     /// 플레이어의 생존 여부
@@ -349,8 +366,8 @@ public class Player : MonoBehaviour
         lifeTime = 0.0f;            //수명은 0으로
 
         isDead= true;               //죽었다고 표시
-        onDie?.Invoke(totalPlayTime, killCount);        //죽었다고 알림
-            
+        onDie?.Invoke(totalPlayTime, KillCount);        //죽었다고 알림
+
     }
 
 
@@ -360,6 +377,7 @@ public class Player : MonoBehaviour
     /// <param name="time">추가되는 수명</param>
     public void AddLifeTime(float time)
     {
+        
         LifeTime += time;
     }
 
@@ -368,10 +386,7 @@ public class Player : MonoBehaviour
     /// </summary>
     public void AddKillCount()
     {
-        
-        
-        killCount++;
-        onKill?.Invoke(killCount);
+        KillCount++;
     }
 
 }
