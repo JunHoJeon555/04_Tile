@@ -58,6 +58,8 @@ public class LifeTimeGauge : MonoBehaviour
     {
         //ratio = Mathf.MoveTowards(slider.value, ratio , speed * Time.deltaTime);
         targetValue = ratio;        //목표치만 변경
+
+        currentValue = Mathf.MoveTowards(currentValue, value, changeSpeed * Time.deltaTime);
     }
 }
 
