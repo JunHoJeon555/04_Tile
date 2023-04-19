@@ -36,10 +36,6 @@ public class LifeTimeGauge : MonoBehaviour
                 slider.value = Mathf.Max(0, targetValue);   //targetValue가 되거나 0
 
             }
-            else
-            {
-
-            }
         }
         else
         {

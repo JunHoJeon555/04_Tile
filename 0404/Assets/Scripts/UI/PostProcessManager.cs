@@ -46,10 +46,6 @@ public class PostProcessManager : MonoBehaviour
                 vignette.intensity.value = Mathf.Max(0, targetValue);   //targetValue가 되거나 0
 
             }
-            else
-            {
-
-            }
         }
         else
         {
